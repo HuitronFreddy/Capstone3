@@ -9,7 +9,7 @@ import org.yearup.models.Category;
 import org.yearup.models.Product;
 
 import java.util.List;
-
+//Steeven
 // add the annotations to make this a REST controller
 // add the annotation to make this controller the endpoint for the following url
     // http://localhost:8080/categories
@@ -19,9 +19,8 @@ public class CategoriesController
     private CategoryDao categoryDao;
     private ProductDao productDao;
 
-
+    //Nathan
     // create an Autowired controller to inject the categoryDao and ProductDao
-
     // add the appropriate annotation for a get action
     public List<Category> getAll()
     {
@@ -29,6 +28,7 @@ public class CategoriesController
         return null;
     }
 
+    //David
     // add the appropriate annotation for a get action
     public Category getById(@PathVariable int id)
     {
@@ -36,6 +36,7 @@ public class CategoriesController
         return null;
     }
 
+    //Freddy
     // the url to return all products in category 1 would look like this
     // https://localhost:8080/categories/1/products
     @GetMapping("{categoryId}/products")
@@ -45,6 +46,7 @@ public class CategoriesController
         return null;
     }
 
+    //Steeven
     // add annotation to call this method for a POST action
     // add annotation to ensure that only an ADMIN can call this function
     public Category addCategory(@RequestBody Category category)
@@ -53,6 +55,7 @@ public class CategoriesController
         return null;
     }
 
+    //Nathan
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
     public void updateCategory(@PathVariable int id, @RequestBody Category category)
@@ -60,7 +63,7 @@ public class CategoriesController
         // update the category by id
     }
 
-
+    //David
     // add annotation to call this method for a DELETE action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
     public void deleteCategory(@PathVariable int id)

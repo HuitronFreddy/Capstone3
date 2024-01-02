@@ -17,6 +17,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         super(dataSource);
     }
 
+    //Freddy
     @Override
     public List<Category> getAllCategories()
     {
@@ -31,6 +32,7 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         return null;
     }
 
+    //Steeven
     @Override
     public Category create(Category category)
     {
@@ -38,12 +40,14 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
         return null;
     }
 
+
     @Override
     public void update(int categoryId, Category category)
     {
         // update category
     }
 
+    //Nathan
     @Override
     public void delete(int categoryId)
     {
