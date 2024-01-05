@@ -10,6 +10,7 @@ import org.yearup.data.ShoppingCartDao;
 import org.yearup.data.ShoppingCartDto;
 import org.yearup.data.UserDao;
 import org.yearup.models.ShoppingCart;
+import org.yearup.models.ShoppingCartItem;
 import org.yearup.models.User;
 
 import java.security.Principal;
@@ -52,11 +53,19 @@ public class ShoppingCartController {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
             int userId = user.getId();
-
-            shoppingCartDao.addToCart(userId, productId);
             ShoppingCart updatedCart = shoppingCartDao.getByUserId(userId);
 
-            return updatedCart;
+            if(updatedCart.contains(productId)){
+                ShoppingCartItem item = updatedCart.get(productId);
+                int currentQuantity = item.getQuantity();
+                int newQuantity = currentQuantity + 1;
+
+                shoppingCartDao.updateItem(newQuantity, userId, productId);
+            }
+            else {
+                shoppingCartDao.addItem(productId, userId);
+            }
+            return shoppingCartDao.getByUserId(userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
@@ -65,23 +74,22 @@ public class ShoppingCartController {
     @PutMapping("/products/{productId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart updateCartItem(@PathVariable int productId,
-                                       @RequestBody ShoppingCartDto shoppingCartDto,
+                                       @RequestParam int quantity,
                                        Principal principal) {
         try {
             String username = principal.getName();
             User user = userDao.getByUserName(username);
             int userId = user.getId();
 
-            shoppingCartDao.updateCart(userId, productId, shoppingCartDto.getQuantity());
-            ShoppingCart updatedCart = shoppingCartDao.getByUserId(userId);
+            shoppingCartDao.updateItem(userId, productId, quantity);
 
-            return updatedCart;
+            return shoppingCartDao.getByUserId(userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
         }
     }
 
-    @DeleteMapping
+    @DeleteMapping(path = "/products/{productId}")
     @PreAuthorize("hasRole('ROLE_USER')")
     public ShoppingCart clearCart(Principal principal) {
         try {
@@ -90,11 +98,25 @@ public class ShoppingCartController {
             int userId = user.getId();
 
             shoppingCartDao.clearCart(userId);
-            ShoppingCart updatedCart = shoppingCartDao.getByUserId(userId);
 
-            return updatedCart;
+            return shoppingCartDao.getByUserId(userId);
         } catch (Exception e) {
             throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... our bad.");
+        }
+    }
+    @DeleteMapping()
+    public ShoppingCart removeItemFromCart(@PathVariable int productId, Principal principal){
+        try{
+            String username = principal.getName();
+            User user = userDao.getByUserName(username);
+            int userId = user.getId();
+
+            shoppingCartDao.removeItem(productId, userId);
+
+            return shoppingCartDao.getByUserId(userId);
+        }
+        catch (Exception ex){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "Oops... Our bad.");
         }
     }
 }
