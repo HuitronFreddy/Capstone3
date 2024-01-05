@@ -14,8 +14,12 @@ import java.util.List;
 // add the annotation to make this controller the endpoint for the following url
     // http://localhost:8080/categories
 // add annotation to allow cross site origin requests
+@RestController
+@RequestMapping("/categories")
+@CrossOrigin
 public class CategoriesController
 {
+
     private CategoryDao categoryDao;
     private ProductDao productDao;
 
@@ -49,10 +53,15 @@ public class CategoriesController
     //Steeven
     // add annotation to call this method for a POST action
     // add annotation to ensure that only an ADMIN can call this function
-    public Category addCategory(@RequestBody Category category)
-    {
-        // insert the category
-        return null;
+    @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
+    public Category addCategory(@RequestBody Category category) {
+        try {
+            return categoryDao.create(category);
+        }
+        catch (Exception exception){
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR,"add category error");
+        }
     }
 
     //Nathan
