@@ -3,6 +3,9 @@ package org.yearup.data.mysql;
 import org.springframework.stereotype.Component;
 import org.yearup.data.CategoryDao;
 import org.yearup.models.Category;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -48,8 +51,9 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     }
 
     //Nathan
-    @Override
-    public void delete(int categoryId)
+    @DeleteMapping("/categories/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void deleteCategory(@PathVariable int categoryId)
     {
         // delete category
     }

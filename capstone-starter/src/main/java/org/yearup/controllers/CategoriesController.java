@@ -1,7 +1,11 @@
 package org.yearup.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.yearup.data.CategoryDao;
 import org.yearup.data.ProductDao;
@@ -9,6 +13,9 @@ import org.yearup.models.Category;
 import org.yearup.models.Product;
 
 import java.util.List;
+
+import static com.sun.org.apache.xerces.internal.impl.xpath.regex.Token.categories;
+
 //Steeven
 // add the annotations to make this a REST controller
 // add the annotation to make this controller the endpoint for the following url
@@ -22,11 +29,31 @@ public class CategoriesController
     //Nathan
     // create an Autowired controller to inject the categoryDao and ProductDao
     // add the appropriate annotation for a get action
+    @RestController
+    public class YourController {
+
+        private final CategoryDao categoryDao;
+        private final ProductDao productDao;
+
+        @Autowired
+        public YourController(CategoryDao categoryDao, ProductDao productDao) {
+            this.categoryDao = categoryDao;
+            this.productDao = productDao;
+        }
+
+        @GetMapping("/categories")
     public List<Category> getAll()
     {
         // find and return all categories
-        return null;
+        List<Category> categories = categoryDao.getAllCategories();
+        return categories;
     }
+        @GetMapping("/products")
+        public List<Product> getAllProducts() {
+            // Find and return all products using productDao
+            List<Product> products = productDao.getAllProducts();
+            return products;
+        }
 
     //David
     // add the appropriate annotation for a get action
@@ -58,7 +85,9 @@ public class CategoriesController
     //Nathan
     // add annotation to call this method for a PUT (update) action - the url path must include the categoryId
     // add annotation to ensure that only an ADMIN can call this function
-    public void updateCategory(@PathVariable int id, @RequestBody Category category)
+    @PutMapping("/categories/{categoryId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public void updateCategory(@PathVariable int Id, @RequestBody Category category)
     {
         // update the category by id
     }
