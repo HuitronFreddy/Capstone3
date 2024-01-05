@@ -67,10 +67,12 @@ public class CategoriesController
 
     //David
     // add the appropriate annotation for a get action
+    @GetMapping
     public Category getById(@PathVariable int id)
     {
         // get the category by id
-        return null;
+        Category category = category.getCategoryById();
+        return category;
     }
 
     //Freddy
