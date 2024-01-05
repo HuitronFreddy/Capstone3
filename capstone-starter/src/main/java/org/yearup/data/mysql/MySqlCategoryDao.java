@@ -2,11 +2,13 @@ package org.yearup.data.mysql;
 
 import org.springframework.stereotype.Component;
 import org.yearup.data.CategoryDao;
+import org.yearup.data.ProductDao;
 import org.yearup.models.Category;
+import org.yearup.models.Product;
 
 import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
@@ -22,13 +24,50 @@ public class MySqlCategoryDao extends MySqlDaoBase implements CategoryDao
     public List<Category> getAllCategories()
     {
         // get all categories
-        return null;
+        List <Category> categories = new ArrayList<>();
+
+        String sql = """
+                Select *
+                From categories;
+                """;
+
+        try(Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql);
+            ResultSet row = statement.executeQuery()){
+
+            while(row.next()){
+                Category category = mapRow(row);
+                categories.add(category);
+            }
+        }
+        catch(SQLException ex){
+            throw new RuntimeException("Unable to fetch categories. Please try again.", ex);
+        }
+        return categories;
     }
 
     @Override
     public Category getById(int categoryId)
     {
-        // get category by id
+        String sql = """
+                SELECT *
+                FROM categories
+                WHERE category_id = ?;
+                """;
+
+        try (Connection connection = getConnection();
+            PreparedStatement statement = connection.prepareStatement(sql)){
+            statement.setInt(1, categoryId);
+
+            try (ResultSet row = statement.executeQuery()){
+                if(row.next()) {
+                return mapRow(row);
+                }
+            }
+        }
+        catch(SQLException ex){
+            throw new RuntimeException("Unable to fetch the category. Please try again.", ex);
+        }
         return null;
     }
 
